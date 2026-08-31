@@ -579,6 +579,82 @@ const CURATED_PRODUCTS: Product[] = [
     description: "Elektrofahrrad",
     emoji: "🚲",
   },
+  // Private Jets & Helicopters
+  {
+    name: "Gulfstream G650",
+    category: "Privatjets",
+    estimatedPrice: 65000000,
+    annualAppreciation: -0.06,
+    description: "Langstrecken-Businessjet",
+    emoji: "🛩️",
+  },
+  {
+    name: "Cessna Citation CJ4",
+    category: "Privatjets",
+    estimatedPrice: 10000000,
+    annualAppreciation: -0.07,
+    description: "Leichter Businessjet",
+    emoji: "🛩️",
+  },
+  {
+    name: "Airbus H145 Helikopter",
+    category: "Privatjets",
+    estimatedPrice: 8500000,
+    annualAppreciation: -0.05,
+    description: "Luxus-Helikopter",
+    emoji: "🚁",
+  },
+  // Perfume
+  {
+    name: "Clive Christian No. 1",
+    category: "Düfte",
+    estimatedPrice: 1500,
+    annualAppreciation: -0.04,
+    description: "Eines der teuersten Parfums der Welt",
+    emoji: "🧴",
+  },
+  {
+    name: "Creed Aventus (Sammlerflakon)",
+    category: "Düfte",
+    estimatedPrice: 400,
+    annualAppreciation: -0.05,
+    description: "Kultduft",
+    emoji: "🧴",
+  },
+  // Writing Instruments
+  {
+    name: "Montblanc Meisterstück Solitaire",
+    category: "Schreibgeräte",
+    estimatedPrice: 3500,
+    annualAppreciation: 0.02,
+    description: "Ikonischer Füllfederhalter",
+    emoji: "🖋️",
+  },
+  {
+    name: "Caran d'Ache 1010 Gold",
+    category: "Schreibgeräte",
+    estimatedPrice: 12000,
+    annualAppreciation: 0.03,
+    description: "Limitierter Goldkugelschreiber",
+    emoji: "🖋️",
+  },
+  // Cigars
+  {
+    name: "Cohiba Behike 56 (Kiste)",
+    category: "Zigarren",
+    estimatedPrice: 4500,
+    annualAppreciation: 0.04,
+    description: "Prestige-Zigarrenkiste",
+    emoji: "🚬",
+  },
+  {
+    name: "Padrón 1964 Anniversary (Kiste)",
+    category: "Zigarren",
+    estimatedPrice: 900,
+    annualAppreciation: 0.03,
+    description: "Gereifte Premium-Zigarren",
+    emoji: "🚬",
+  },
 ];
 
 // --- Generated catalog extension -------------------------------------
@@ -834,6 +910,64 @@ const CATEGORY_TEMPLATES: CategoryTemplate[] = [
     appreciationMin: -0.18,
     appreciationMax: -0.05,
   },
+  {
+    category: "Privatjets",
+    emoji: "🛩️",
+    brands: [
+      "Gulfstream", "Bombardier", "Cessna", "Dassault Falcon", "Embraer",
+      "Learjet", "Airbus Corporate Jets", "Boeing Business Jets", "Pilatus",
+      "Honda Aircraft",
+    ],
+    models: ["Light Jet", "Midsize Jet", "Long Range Jet", "Helikopter"],
+    variants: ["Standard", "VIP-Ausstattung", "Neuwertig"],
+    priceMin: 2000000,
+    priceMax: 70000000,
+    appreciationMin: -0.09,
+    appreciationMax: -0.03,
+  },
+  {
+    category: "Düfte",
+    emoji: "🧴",
+    brands: [
+      "Creed", "Tom Ford", "Chanel", "Guerlain", "Roja Parfums",
+      "Amouage", "Clive Christian", "Xerjoff", "Parfums de Marly",
+      "Maison Francis Kurkdjian",
+    ],
+    models: ["Eau de Parfum", "Extrait", "Sammler-Flakon"],
+    variants: ["50ml", "100ml", "Limitierte Edition"],
+    priceMin: 150,
+    priceMax: 5000,
+    appreciationMin: -0.15,
+    appreciationMax: -0.02,
+  },
+  {
+    category: "Schreibgeräte",
+    emoji: "🖋️",
+    brands: [
+      "Montblanc", "Parker", "Waterman", "Pelikan", "Graf von Faber-Castell",
+      "Caran d'Ache", "Visconti", "Aurora", "S.T. Dupont", "Cartier",
+    ],
+    models: ["Füllfederhalter", "Kugelschreiber", "Sammler-Set"],
+    variants: ["Standard", "Limited Edition", "Solid Gold"],
+    priceMin: 300,
+    priceMax: 15000,
+    appreciationMin: -0.03,
+    appreciationMax: 0.05,
+  },
+  {
+    category: "Zigarren",
+    emoji: "🚬",
+    brands: [
+      "Cohiba", "Montecristo", "Romeo y Julieta", "Padrón", "Davidoff",
+      "Partagás", "Arturo Fuente", "H. Upmann", "Bolivar", "Trinidad",
+    ],
+    models: ["Kiste (25 Stück)", "Humidor-Set", "Vintage-Kiste"],
+    variants: ["Standard", "Gran Reserva", "Limited Edition"],
+    priceMin: 300,
+    priceMax: 20000,
+    appreciationMin: 0.0,
+    appreciationMax: 0.06,
+  },
 ];
 
 function generateCatalog(): Product[] {
@@ -895,6 +1029,10 @@ export const CATEGORY_EMOJIS: Record<string, string> = {
   Möbel: "🛋️",
   Musikinstrumente: "🎸",
   Fahrräder: "🚴",
+  Privatjets: "🛩️",
+  Düfte: "🧴",
+  Schreibgeräte: "🖋️",
+  Zigarren: "🚬",
 };
 
 export const INVESTMENTS: Investment[] = [
