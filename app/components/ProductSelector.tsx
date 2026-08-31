@@ -8,25 +8,43 @@ interface ProductSelectorProps {
   onSelect: (product: (typeof PRODUCTS)[0]) => void;
 }
 
+const PAGE_SIZE = 60;
+
 export default function ProductSelector({
   selected,
   onSelect,
 }: ProductSelectorProps) {
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [lastFilterKey, setLastFilterKey] = useState(`${search}:${activeCategory}`);
 
   const categories = useMemo(
     () => Array.from(new Set(PRODUCTS.map((p) => p.category))).sort(),
     []
   );
 
-  const filtered = PRODUCTS.filter((p) => {
-    const matchesSearch =
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = !activeCategory || p.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const filtered = useMemo(() => {
+    const query = search.toLowerCase();
+    return PRODUCTS.filter((p) => {
+      const matchesSearch =
+        !query ||
+        p.name.toLowerCase().includes(query) ||
+        p.category.toLowerCase().includes(query);
+      const matchesCategory = !activeCategory || p.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [search, activeCategory]);
+
+  // Reset pagination whenever the filters change.
+  const filterKey = `${search}:${activeCategory}`;
+  if (filterKey !== lastFilterKey) {
+    setLastFilterKey(filterKey);
+    setVisibleCount(PAGE_SIZE);
+  }
+
+  const visible = filtered.slice(0, visibleCount);
+  const hasMore = filtered.length > visible.length;
 
   return (
     <div className="w-full">
@@ -41,7 +59,7 @@ export default function ProductSelector({
         className="w-full px-4 py-2.5 rounded-xl bg-[var(--background)] border border-[var(--border)] text-sm placeholder:text-[var(--muted)] focus:ring-2 focus:ring-[var(--accent)] focus:border-transparent outline-none transition"
       />
 
-      <div className="flex flex-wrap gap-2 mt-4 mb-5">
+      <div className="flex flex-wrap gap-2 mt-4 mb-3">
         <button
           onClick={() => setActiveCategory(null)}
           className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
@@ -67,8 +85,12 @@ export default function ProductSelector({
         ))}
       </div>
 
+      <p className="text-xs text-[var(--muted)] mb-2">
+        {filtered.length.toLocaleString()} Objekte gefunden
+      </p>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[420px] overflow-y-auto pr-1">
-        {filtered.map((product) => {
+        {visible.map((product) => {
           const isSelected = selected?.name === product.name;
           return (
             <button
@@ -103,6 +125,15 @@ export default function ProductSelector({
           </p>
         )}
       </div>
+
+      {hasMore && (
+        <button
+          onClick={() => setVisibleCount((c) => c + PAGE_SIZE)}
+          className="w-full mt-3 py-2.5 rounded-xl border border-[var(--border)] text-sm font-medium text-[var(--muted)] hover:border-[var(--accent)] hover:text-[var(--foreground)] transition"
+        >
+          Mehr laden ({(filtered.length - visible.length).toLocaleString()} weitere)
+        </button>
+      )}
     </div>
   );
 }

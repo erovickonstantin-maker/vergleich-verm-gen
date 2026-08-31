@@ -19,7 +19,7 @@ export interface Investment {
   emoji: string;
 }
 
-export const PRODUCTS: Product[] = [
+const CURATED_PRODUCTS: Product[] = [
   // Watches
   {
     name: "Rolex Submariner",
@@ -579,6 +579,304 @@ export const PRODUCTS: Product[] = [
     description: "Elektrofahrrad",
     emoji: "🚲",
   },
+];
+
+// --- Generated catalog extension -------------------------------------
+// Deterministically expands the curated list above into a much larger
+// browsable catalog (brand x model x variant combinations per category),
+// so the tool has thousands of items without hand-authoring each one.
+// The hash-based pricing keeps output stable across server and client
+// renders (no Math.random, which would cause hydration mismatches).
+
+function hashString(input: string): number {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash * 31 + input.charCodeAt(i)) >>> 0;
+  }
+  return hash;
+}
+
+function fraction(input: string): number {
+  return (hashString(input) % 10000) / 10000;
+}
+
+function roundPrice(price: number): number {
+  if (price < 1000) return Math.round(price / 5) * 5;
+  if (price < 10000) return Math.round(price / 50) * 50;
+  if (price < 100000) return Math.round(price / 500) * 500;
+  return Math.round(price / 5000) * 5000;
+}
+
+interface CategoryTemplate {
+  category: string;
+  emoji: string;
+  brands: string[];
+  models: string[];
+  variants: string[];
+  priceMin: number;
+  priceMax: number;
+  appreciationMin: number;
+  appreciationMax: number;
+}
+
+const CATEGORY_TEMPLATES: CategoryTemplate[] = [
+  {
+    category: "Uhren",
+    emoji: "⌚",
+    brands: [
+      "Rolex", "Omega", "Patek Philippe", "Audemars Piguet", "Cartier",
+      "IWC", "Panerai", "Breitling", "TAG Heuer", "Hublot", "Longines",
+      "Tudor", "Zenith", "Jaeger-LeCoultre",
+    ],
+    models: ["Classic", "Chronograph"],
+    variants: ["Stahl", "Gold", "Zweifarbig", "Keramik", "Titan"],
+    priceMin: 3000,
+    priceMax: 200000,
+    appreciationMin: -0.02,
+    appreciationMax: 0.08,
+  },
+  {
+    category: "Elektronik",
+    emoji: "📱",
+    brands: [
+      "Apple", "Samsung", "Sony", "Google", "Dell", "HP", "Lenovo",
+      "Microsoft", "LG", "ASUS",
+    ],
+    models: ["Smartphone", "Laptop", "Tablet", "Kamera", "Kopfhörer"],
+    variants: ["128GB", "256GB", "512GB", "1TB"],
+    priceMin: 300,
+    priceMax: 6000,
+    appreciationMin: -0.22,
+    appreciationMax: -0.08,
+  },
+  {
+    category: "Mode",
+    emoji: "👜",
+    brands: [
+      "Hermès", "Louis Vuitton", "Chanel", "Gucci", "Prada", "Dior",
+      "Balenciaga", "Fendi", "Burberry", "Saint Laurent",
+    ],
+    models: ["Handtasche", "Geldbörse", "Schal", "Gürtel", "Jacke"],
+    variants: ["Schwarz", "Braun", "Beige", "Bordeaux"],
+    priceMin: 300,
+    priceMax: 12000,
+    appreciationMin: -0.2,
+    appreciationMax: 0.08,
+  },
+  {
+    category: "Sneaker",
+    emoji: "👟",
+    brands: [
+      "Nike", "Adidas", "New Balance", "Puma", "Reebok", "Converse",
+      "Vans", "ASICS", "Jordan", "Yeezy",
+    ],
+    models: ["Retro High", "Classic", "Pro", "SE", "OG"],
+    variants: ["Black/White", "Chicago", "University Blue"],
+    priceMin: 100,
+    priceMax: 3000,
+    appreciationMin: -0.08,
+    appreciationMax: 0.15,
+  },
+  {
+    category: "Autos",
+    emoji: "🚗",
+    brands: [
+      "Porsche", "Ferrari", "Lamborghini", "Mercedes-Benz", "BMW", "Audi",
+      "Bentley", "Aston Martin", "McLaren", "Maserati", "Rolls-Royce",
+    ],
+    models: ["Coupé", "Cabrio", "SUV", "Limousine"],
+    variants: ["Basis", "Sport", "Performance"],
+    priceMin: 25000,
+    priceMax: 350000,
+    appreciationMin: -0.15,
+    appreciationMax: 0.05,
+  },
+  {
+    category: "Schmuck",
+    emoji: "💍",
+    brands: [
+      "Cartier", "Tiffany & Co.", "Van Cleef & Arpels", "Bulgari",
+      "Chopard", "Harry Winston", "Graff", "Boucheron", "Piaget",
+      "Mikimoto",
+    ],
+    models: ["Ring", "Armband", "Halskette", "Ohrringe"],
+    variants: ["Gold", "Weißgold", "Platin"],
+    priceMin: 2000,
+    priceMax: 60000,
+    appreciationMin: 0.02,
+    appreciationMax: 0.06,
+  },
+  {
+    category: "Kunst",
+    emoji: "🖼️",
+    brands: [
+      "Zeitgenössisch", "Abstrakt", "Pop-Art", "Impressionistisch",
+      "Street Art", "Fotografie", "Skulptur", "Minimalismus",
+      "Surrealistisch", "Modern",
+    ],
+    models: ["Gemälde", "Druck", "Skulptur"],
+    variants: ["Klein", "Mittel", "Groß", "Limitiert"],
+    priceMin: 1000,
+    priceMax: 50000,
+    appreciationMin: 0.02,
+    appreciationMax: 0.08,
+  },
+  {
+    category: "Sammlerstücke",
+    emoji: "🎴",
+    brands: [
+      "Pokémon", "Magic The Gathering", "Yu-Gi-Oh", "Marvel Comics",
+      "DC Comics", "LEGO", "Funko", "Topps", "Panini", "Hot Wheels",
+    ],
+    models: ["Booster Box", "Grading-Karte", "Sammler-Set", "Erstausgabe"],
+    variants: ["Standard", "Limitiert", "Ungeöffnet"],
+    priceMin: 200,
+    priceMax: 100000,
+    appreciationMin: 0.03,
+    appreciationMax: 0.15,
+  },
+  {
+    category: "Wein",
+    emoji: "🍷",
+    brands: [
+      "Château Lafite", "Château Margaux", "Dom Pérignon", "Moët & Chandon",
+      "Macallan", "Glenfiddich", "Pappy Van Winkle", "Louis Roederer",
+      "Krug", "Screaming Eagle",
+    ],
+    models: ["Kiste", "Flasche", "Magnum"],
+    variants: ["Jahrgang A", "Jahrgang B", "Jahrgang C", "Jahrgang D"],
+    priceMin: 200,
+    priceMax: 15000,
+    appreciationMin: 0.02,
+    appreciationMax: 0.08,
+  },
+  {
+    category: "Boote",
+    emoji: "🛥️",
+    brands: [
+      "Bavaria", "Beneteau", "Sunseeker", "Azimut", "Princess", "Ferretti",
+      "Jeanneau", "Fairline", "Riva", "Sea Ray",
+    ],
+    models: ["Motoryacht", "Segelboot", "Sportboot"],
+    variants: ["8m", "10m", "12m", "14m"],
+    priceMin: 10000,
+    priceMax: 500000,
+    appreciationMin: -0.15,
+    appreciationMax: -0.02,
+  },
+  {
+    category: "Gaming",
+    emoji: "🎮",
+    brands: [
+      "Sony", "Microsoft", "Nintendo", "Valve", "ASUS ROG", "Razer",
+      "Alienware", "MSI", "Corsair", "Logitech",
+    ],
+    models: ["Konsole", "Gaming-PC", "Handheld", "Zubehör-Set"],
+    variants: ["Standard", "Pro", "Limited Edition"],
+    priceMin: 300,
+    priceMax: 5000,
+    appreciationMin: -0.25,
+    appreciationMax: -0.08,
+  },
+  {
+    category: "Motorräder",
+    emoji: "🏍️",
+    brands: [
+      "Ducati", "Harley-Davidson", "BMW Motorrad", "Honda", "Kawasaki",
+      "Yamaha", "Triumph", "KTM", "Suzuki", "Indian",
+    ],
+    models: ["Sportbike", "Cruiser", "Naked Bike", "Tourer"],
+    variants: ["Standard", "Performance", "Limited"],
+    priceMin: 5000,
+    priceMax: 40000,
+    appreciationMin: -0.12,
+    appreciationMax: -0.02,
+  },
+  {
+    category: "Möbel",
+    emoji: "🛋️",
+    brands: [
+      "Knoll", "Herman Miller", "Vitra", "B&B Italia", "Cassina",
+      "Poliform", "Molteni&C", "Roche Bobois", "Minotti", "Flexform",
+    ],
+    models: ["Sofa", "Sessel", "Tisch", "Regal"],
+    variants: ["Leder", "Stoff", "Holz"],
+    priceMin: 500,
+    priceMax: 60000,
+    appreciationMin: -0.08,
+    appreciationMax: 0.03,
+  },
+  {
+    category: "Musikinstrumente",
+    emoji: "🎸",
+    brands: [
+      "Gibson", "Fender", "Steinway & Sons", "Yamaha", "Roland", "Martin",
+      "Taylor", "PRS", "Ibanez", "Bösendorfer",
+    ],
+    models: ["E-Gitarre", "Akustikgitarre", "Klavier", "Keyboard"],
+    variants: ["Standard", "Vintage", "Custom"],
+    priceMin: 500,
+    priceMax: 100000,
+    appreciationMin: 0.0,
+    appreciationMax: 0.06,
+  },
+  {
+    category: "Fahrräder",
+    emoji: "🚴",
+    brands: [
+      "Specialized", "Trek", "Canyon", "Cannondale", "Cervélo", "Giant",
+      "Scott", "BMC", "Pinarello", "Cube",
+    ],
+    models: ["Rennrad", "Mountainbike", "E-Bike", "Gravelbike"],
+    variants: ["Carbon", "Aluminium", "Titan"],
+    priceMin: 500,
+    priceMax: 12000,
+    appreciationMin: -0.18,
+    appreciationMax: -0.05,
+  },
+];
+
+function generateCatalog(): Product[] {
+  const generated: Product[] = [];
+
+  for (const tpl of CATEGORY_TEMPLATES) {
+    for (const brand of tpl.brands) {
+      for (const model of tpl.models) {
+        for (const variant of tpl.variants) {
+          const name = `${brand} ${model} ${variant}`;
+          const priceFraction = fraction(`${name}:price`);
+          const appreciationFraction = fraction(`${name}:appreciation`);
+
+          const price = roundPrice(
+            tpl.priceMin + priceFraction * (tpl.priceMax - tpl.priceMin)
+          );
+          const appreciation =
+            Math.round(
+              (tpl.appreciationMin +
+                appreciationFraction *
+                  (tpl.appreciationMax - tpl.appreciationMin)) *
+                1000
+            ) / 1000;
+
+          generated.push({
+            name,
+            category: tpl.category,
+            estimatedPrice: price,
+            annualAppreciation: appreciation,
+            description: `${brand} ${model} – ${variant}`,
+            emoji: tpl.emoji,
+          });
+        }
+      }
+    }
+  }
+
+  return generated;
+}
+
+export const PRODUCTS: Product[] = [
+  ...CURATED_PRODUCTS,
+  ...generateCatalog(),
 ];
 
 export const CATEGORY_EMOJIS: Record<string, string> = {
