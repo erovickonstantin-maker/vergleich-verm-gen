@@ -65,11 +65,11 @@ export const analyzeInvestment = (
 
   let recommendation = "";
   if (difference > initialAmount * 0.5) {
-    recommendation = `💡 Invest! In 10 years, ${bestInvestment.name} outperforms buying ${product.name} by €${Math.round(difference).toLocaleString()} (${percentDifference}%)`;
+    recommendation = `💡 Investieren! In 10 Jahren übertrifft ${bestInvestment.name} den Kauf von ${product.name} um €${Math.round(difference).toLocaleString()} (${percentDifference}%)`;
   } else if (difference > 0) {
-    recommendation = `⚖️ Close Call. Both options are viable, but ${bestInvestment.name} edges ahead by €${Math.round(difference).toLocaleString()}.`;
+    recommendation = `⚖️ Knappe Entscheidung. Beide Optionen sind sinnvoll, aber ${bestInvestment.name} liegt um €${Math.round(difference).toLocaleString()} vorne.`;
   } else {
-    recommendation = `🎯 Buy the ${product.name}! It outperforms investments in your case.`;
+    recommendation = `🎯 Kauf dir ${product.name}! In deinem Fall schlägt es die Investment-Alternativen.`;
   }
 
   return {

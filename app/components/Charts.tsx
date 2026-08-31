@@ -12,21 +12,25 @@ import {
   ScatterChart,
   Scatter,
 } from "recharts";
-import { Investment, INVESTMENTS } from "@/lib/data";
-import { YearlyData, ComparisonData } from "@/lib/calculations";
+import { INVESTMENTS } from "@/lib/data";
+import { YearlyData } from "@/lib/calculations";
 
 const COLORS = [
-  "#3b82f6",
-  "#ef4444",
-  "#10b981",
-  "#f59e0b",
-  "#8b5cf6",
-  "#ec4899",
-  "#14b8a6",
-  "#f97316",
-  "#6366f1",
-  "#06b6d4",
+  "#6d8dff",
+  "#fb7185",
+  "#34d399",
+  "#fbbf24",
+  "#a78bfa",
+  "#f472b6",
+  "#22d3ee",
+  "#fb923c",
+  "#818cf8",
+  "#2dd4bf",
+  "#facc15",
 ];
+
+const GRID_COLOR = "#263252";
+const AXIS_COLOR = "#8a93b3";
 
 interface CapitalGrowthChartProps {
   data: YearlyData[];
@@ -43,27 +47,47 @@ export function CapitalGrowthChart({
     <div className="w-full h-96">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="year" label={{ value: "Years", position: "right", offset: -5 }} />
-          <YAxis
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
+          <XAxis
+            dataKey="year"
+            stroke={AXIS_COLOR}
+            tick={{ fill: AXIS_COLOR, fontSize: 12 }}
             label={{
-              value: "Value (€)",
+              value: "Jahre",
+              position: "right",
+              offset: -5,
+              fill: AXIS_COLOR,
+            }}
+          />
+          <YAxis
+            stroke={AXIS_COLOR}
+            tick={{ fill: AXIS_COLOR, fontSize: 12 }}
+            label={{
+              value: "Wert (€)",
               angle: -90,
               position: "insideLeft",
+              fill: AXIS_COLOR,
             }}
           />
           <Tooltip
+            contentStyle={{
+              background: "#151c33",
+              border: "1px solid #263252",
+              borderRadius: 10,
+              color: "#e8ecf7",
+            }}
             formatter={(value) =>
               typeof value === "number"
                 ? `€${Math.round(value).toLocaleString()}`
                 : value
             }
           />
-          <Legend />
+          <Legend wrapperStyle={{ fontSize: 12, color: AXIS_COLOR }} />
           <Line
             type="monotone"
             dataKey="productValue"
             stroke={COLORS[0]}
+            strokeWidth={3}
             name={productName}
             isAnimationActive={false}
           />
@@ -73,6 +97,8 @@ export function CapitalGrowthChart({
               type="monotone"
               dataKey={symbol}
               stroke={COLORS[(idx + 1) % COLORS.length]}
+              strokeWidth={1.5}
+              dot={false}
               isAnimationActive={false}
             />
           ))}
@@ -105,39 +131,49 @@ export function RiskRewardChart({ data }: RiskRewardChartProps) {
   return (
     <div className="w-full h-96">
       <ResponsiveContainer width="100%" height="100%">
-        <ScatterChart
-          margin={{ top: 20, right: 20, bottom: 20, left: 20 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
+        <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={GRID_COLOR} />
           <XAxis
             type="number"
             dataKey="x"
-            name="Risk (Volatility %)"
-            label={{ value: "Risk (Volatility %)", position: "bottom", offset: 5 }}
+            name="Risiko (Volatilität %)"
+            stroke={AXIS_COLOR}
+            tick={{ fill: AXIS_COLOR, fontSize: 12 }}
+            label={{
+              value: "Risiko (Volatilität %)",
+              position: "bottom",
+              offset: 5,
+              fill: AXIS_COLOR,
+            }}
           />
           <YAxis
             type="number"
             dataKey="y"
-            name="Return (Annual %)"
+            name="Rendite (Jährlich %)"
+            stroke={AXIS_COLOR}
+            tick={{ fill: AXIS_COLOR, fontSize: 12 }}
             label={{
-              value: "Return (Annual %)",
+              value: "Rendite (Jährlich %)",
               angle: -90,
               position: "insideLeft",
+              fill: AXIS_COLOR,
             }}
           />
           <Tooltip
-            cursor={{ strokeDasharray: "3 3" }}
+            cursor={{ strokeDasharray: "3 3", stroke: GRID_COLOR }}
             content={({ active, payload }) => {
               if (active && payload && payload[0]) {
-                const data = payload[0].payload;
+                const d = payload[0].payload;
                 return (
-                  <div className="bg-white p-3 rounded shadow-lg border border-gray-200">
-                    <p className="font-semibold">{data.name}</p>
-                    <p className="text-sm">
-                      Risk: {data.x.toFixed(1)}%
+                  <div className="bg-[#151c33] p-3 rounded-lg shadow-lg border border-[var(--border)]">
+                    <p className="font-semibold">
+                      {d.emoji} {d.name}
                     </p>
-                    <p className="text-sm">
-                      Return: {data.y.toFixed(1)}%
+                    <p className="text-sm text-[var(--muted)]">
+                      Risiko: {d.x.toFixed(1)}%
+                    </p>
+                    <p className="text-sm text-[var(--muted)]">
+                      Rendite: {d.y.toFixed(1)}%
                     </p>
                   </div>
                 );
@@ -145,12 +181,7 @@ export function RiskRewardChart({ data }: RiskRewardChartProps) {
               return null;
             }}
           />
-          <Scatter
-            name="Investments"
-            data={chartData}
-            fill="#3b82f6"
-            shape="circle"
-          />
+          <Scatter name="Investments" data={chartData} fill="#6d8dff" shape="circle" />
         </ScatterChart>
       </ResponsiveContainer>
     </div>

@@ -7,12 +7,14 @@ interface RecommendationProps {
   product: Product;
   analysis: ComparisonData;
   allInvestments: Investment[];
+  customValue: number;
 }
 
 export default function Recommendation({
   product,
   analysis,
   allInvestments,
+  customValue,
 }: RecommendationProps) {
   const bestInvestment = allInvestments.find(
     (i) => i.symbol === analysis.summary.bestAtYear
@@ -25,34 +27,40 @@ export default function Recommendation({
   const bestValue10 = year10[bestInvestment.symbol];
   const difference = bestValue10 - productValue10;
 
+  const riskBadge = {
+    low: { label: "🟢 Niedrig", color: "text-[var(--success)]" },
+    medium: { label: "🟡 Mittel", color: "text-yellow-400" },
+    high: { label: "🔴 Hoch", color: "text-[var(--danger)]" },
+  }[bestInvestment.riskLevel];
+
   return (
-    <div className="w-full bg-gradient-to-br from-blue-50 to-indigo-50 p-8 rounded-lg border-2 border-blue-200">
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        💼 Investment Recommendation
+    <div className="w-full bg-gradient-to-br from-[var(--accent-soft)] to-[var(--surface)] p-6 sm:p-8 rounded-2xl border border-[var(--accent)]/30 shadow-xl animate-fade-in-up">
+      <h2 className="text-xl sm:text-2xl font-bold mb-6 flex items-center gap-2">
+        💼 Investment-Empfehlung
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         {/* Product Info */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold text-gray-700 mb-2">
-            Option 1: Buy {product.name}
+        <div className="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <h3 className="font-semibold text-[var(--muted)] mb-3 text-sm">
+            Option 1: {product.name} kaufen
           </h3>
-          <div className="space-y-2 text-sm">
-            <p>
-              <span className="text-gray-600">Initial Cost:</span>
-              <span className="font-semibold float-right">
-                €{product.estimatedPrice.toLocaleString()}
+          <div className="space-y-2.5 text-sm">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Startwert:</span>
+              <span className="font-semibold">
+                €{customValue.toLocaleString()}
               </span>
             </p>
-            <p>
-              <span className="text-gray-600">Annual Appreciation:</span>
-              <span className="font-semibold float-right">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Jährl. Wertänderung:</span>
+              <span className="font-semibold">
                 {(product.annualAppreciation * 100).toFixed(1)}%
               </span>
             </p>
-            <p>
-              <span className="text-gray-600">Value after 10 years:</span>
-              <span className="font-semibold float-right text-blue-600">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Wert nach 10 Jahren:</span>
+              <span className="font-semibold text-[var(--accent)]">
                 €{Math.round(productValue10).toLocaleString()}
               </span>
             </p>
@@ -60,26 +68,26 @@ export default function Recommendation({
         </div>
 
         {/* Investment Info */}
-        <div className="bg-white p-4 rounded-lg shadow">
-          <h3 className="font-semibold text-gray-700 mb-2">
-            Option 2: Invest in {bestInvestment.emoji} {bestInvestment.name}
+        <div className="bg-[var(--background)] p-4 rounded-xl border border-[var(--border)]">
+          <h3 className="font-semibold text-[var(--muted)] mb-3 text-sm">
+            Option 2: {bestInvestment.emoji} {bestInvestment.name}
           </h3>
-          <div className="space-y-2 text-sm">
-            <p>
-              <span className="text-gray-600">Initial Investment:</span>
-              <span className="font-semibold float-right">
-                €{product.estimatedPrice.toLocaleString()}
+          <div className="space-y-2.5 text-sm">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Anlagebetrag:</span>
+              <span className="font-semibold">
+                €{customValue.toLocaleString()}
               </span>
             </p>
-            <p>
-              <span className="text-gray-600">Average Annual Return (CAGR):</span>
-              <span className="font-semibold float-right">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Ø jährl. Rendite (CAGR):</span>
+              <span className="font-semibold">
                 {(bestInvestment.cagr * 100).toFixed(1)}%
               </span>
             </p>
-            <p>
-              <span className="text-gray-600">Value after 10 years:</span>
-              <span className="font-semibold float-right text-green-600">
+            <p className="flex justify-between">
+              <span className="text-[var(--muted)]">Wert nach 10 Jahren:</span>
+              <span className="font-semibold text-[var(--success)]">
                 €{Math.round(bestValue10).toLocaleString()}
               </span>
             </p>
@@ -88,54 +96,60 @@ export default function Recommendation({
       </div>
 
       {/* Recommendation */}
-      <div className="bg-white p-6 rounded-lg shadow mb-6 border-l-4 border-blue-500">
-        <p className="text-lg font-semibold text-gray-800 mb-2">
+      <div className="bg-[var(--background)] p-5 sm:p-6 rounded-xl border-l-4 border-[var(--accent)] mb-6">
+        <p className="text-base sm:text-lg font-semibold mb-3">
           {analysis.summary.recommendation}
         </p>
-        <div className="text-sm text-gray-600">
+        <div className="text-sm text-[var(--muted)] space-y-1.5">
           <p>
-            <strong>Difference after 10 years:</strong> €
-            {Math.round(difference).toLocaleString()}
+            <strong className="text-[var(--foreground)]">
+              Differenz nach 10 Jahren:
+            </strong>{" "}
+            €{Math.round(difference).toLocaleString()}
           </p>
-          <p className="mt-2">
-            <strong>Your opportunity cost:</strong> By choosing to buy the{" "}
-            {product.name} instead of investing in{" "}
-            {bestInvestment.name.toLowerCase()}, you are{" "}
-            <span className="font-semibold text-red-600">
-              foregoing €{Math.round(difference).toLocaleString()}
+          <p>
+            <strong className="text-[var(--foreground)]">
+              Deine Opportunitätskosten:
+            </strong>{" "}
+            Durch den Kauf von {product.name} statt einer Investition in{" "}
+            {bestInvestment.name}, verzichtest du auf{" "}
+            <span className="font-semibold text-[var(--danger)]">
+              €{Math.round(difference).toLocaleString()}
             </span>{" "}
-            in potential gains.
+            potenziellen Gewinn.
           </p>
         </div>
       </div>
 
       {/* Risk Assessment */}
-      <div className="bg-white p-6 rounded-lg shadow">
-        <h3 className="font-semibold text-gray-700 mb-3">📊 Risk Assessment</h3>
+      <div className="bg-[var(--background)] p-5 sm:p-6 rounded-xl border border-[var(--border)]">
+        <h3 className="font-semibold mb-4 text-sm">📊 Risikobewertung</h3>
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600 mb-1">Risk Level:</p>
-            <p className="text-sm font-semibold">
-              {bestInvestment.riskLevel === "low" && "🟢 Low"}
-              {bestInvestment.riskLevel === "medium" && "🟡 Medium"}
-              {bestInvestment.riskLevel === "high" && "🔴 High"}
+            <p className="text-xs text-[var(--muted)] mb-1">Risikolevel:</p>
+            <p className={`text-sm font-semibold ${riskBadge.color}`}>
+              {riskBadge.label}
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">Volatility:</p>
+            <p className="text-xs text-[var(--muted)] mb-1">Volatilität:</p>
             <p className="text-sm font-semibold">
               {(bestInvestment.volatility * 100).toFixed(0)}%
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">Bull Scenario (10 yrs):</p>
-            <p className="text-sm font-semibold text-green-600">
+            <p className="text-xs text-[var(--muted)] mb-1">
+              Bull-Szenario (10 J.):
+            </p>
+            <p className="text-sm font-semibold text-[var(--success)]">
               +{(bestInvestment.bullScenario * 100).toFixed(0)}%
             </p>
           </div>
           <div>
-            <p className="text-sm text-gray-600 mb-1">Bear Scenario (10 yrs):</p>
-            <p className="text-sm font-semibold text-red-600">
+            <p className="text-xs text-[var(--muted)] mb-1">
+              Bear-Szenario (10 J.):
+            </p>
+            <p className="text-sm font-semibold text-[var(--danger)]">
               {(bestInvestment.bearScenario * 100).toFixed(0)}%
             </p>
           </div>
