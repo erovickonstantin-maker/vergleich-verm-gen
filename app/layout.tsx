@@ -13,14 +13,15 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Investment Opportunity Cost Analyzer",
-  description: "Compare luxury purchases against investment alternatives and see the real opportunity cost",
+  title: "Vermögensvergleich – Kaufen oder Investieren?",
+  description:
+    "Vergleiche Luxuskäufe mit Investment-Alternativen und sieh die wahren Opportunitätskosten",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
-      lang="en"
+      lang="de"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">{children}</body>
